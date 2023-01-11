@@ -1,8 +1,10 @@
 # Movie Database
 A move database project for database class IT3290E
 HUST
+[Final Report](https://docs.google.com/document/d/11-n5uiSzpTiDRPM0NfHfQpganTWKHJtr_gmEIPgeUJk/)
 
 Edit this README.md using [`markdown`](https://www.markdownguide.org) language.
+
 
 ## Environment
 pgAdmin4 ?
