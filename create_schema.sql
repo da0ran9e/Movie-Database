@@ -53,7 +53,7 @@ create table manager(
     cinema_id int
 )
 
-create seat(
+create table seat(
     seat_id int primary key,
     row char(1),
     number char(2),
