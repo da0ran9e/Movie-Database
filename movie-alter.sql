@@ -20,12 +20,12 @@ ALTER TABLE Manager
 ALTER TABLE Room
 	ADD CONSTRAINT fk_room__cinema_id FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id) ON DELETE SET NULL;
 
+ALTER TABLE Seat
+	ADD CONSTRAINT fk_seat__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE SET NULL;
+
 ALTER TABLE Screening
 	ADD CONSTRAINT fk_screen__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE SET NULL,
 	ADD CONSTRAINT fk_screen__movie_id FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE SET NULL;
-
-ALTER TABLE Seat
-	ADD CONSTRAINT fk_seat__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE SET NULL;
 
 ALTER TABLE Ticket
 	ADD CONSTRAINT fk_ticket__seat_id FOREIGN KEY (seat_id) REFERENCES Seat(seat_id) ON DELETE SET NULL,
