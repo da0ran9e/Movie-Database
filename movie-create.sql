@@ -7,7 +7,7 @@ CREATE TABLE Movie (
 	premiere_date date NOT NULL,
 
 	-- may be moved to another join table
-	director varchar(50),
+	-- director varchar(50),
 	casts varchar(50)
 );
 
