@@ -1,7 +1,18 @@
 ALTER TABLE join_movie_genre
-	ADD CONSTRAINT pk_join PRIMARY KEY (movie_id, genre_id),
-	ADD CONSTRAINT fk_join__movie_id FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE,
+	ADD CONSTRAINT pk_join__mg PRIMARY KEY (movie_id, genre_id),
+	ADD CONSTRAINT fk_join__movie_id_g FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE,
 	ADD CONSTRAINT fk_join__genre_id FOREIGN KEY (genre_id) REFERENCES Genre(genre_id) ON DELETE CASCADE;
+
+
+ALTER TABLE join_movie_director
+	ADD CONSTRAINT pk_join__md PRIMARY KEY (movie_id, director_id),
+	ADD CONSTRAINT fk_join__movie_id_d FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE,
+	ADD CONSTRAINT fk_join__director_id FOREIGN KEY (director_id) REFERENCES director(director_id) ON DELETE CASCADE;
+
+ALTER TABLE join_movie_cast
+	ADD CONSTRAINT pk_join__mc PRIMARY KEY (movie_id, cast_id),
+	ADD CONSTRAINT fk_join__movie_id_c FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE,
+	ADD CONSTRAINT fk_join__cast_id FOREIGN KEY (cast_id) REFERENCES casts(cast_id) ON DELETE CASCADE;
 
 ALTER TABLE Manager
 	ADD CONSTRAINT fk_manager__cinema_id FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id) ON DELETE SET NULL;

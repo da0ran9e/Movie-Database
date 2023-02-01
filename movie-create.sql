@@ -1,14 +1,14 @@
 CREATE TABLE Movie (
 	movie_id serial PRIMARY KEY,
-	title varchar(100) NOT NULL,
+	title varchar(200) NOT NULL,
 	description text,
 	age_restriction varchar(5),	-- P, C13, C16, C18, N/A
 	duration interval NOT NULL,
-	premiere_date date NOT NULL,
+	premiere_date date NOT NULL
 
 	-- may be moved to another join table
 	-- director varchar(50),
-	casts varchar(50)
+	-- casts varchar(50)
 );
 
 CREATE TABLE Genre (
@@ -19,21 +19,45 @@ CREATE TABLE Genre (
 CREATE TABLE join_movie_genre (
 	movie_id integer,
 	genre_id integer
+	
+);
+
+CREATE TABLE director (
+	director_id serial PRIMARY KEY,
+	director_name varchar(30)
+);
+
+CREATE TABLE join_movie_director (
+	director_id integer,
+	movie_id integer
+	
+);
+
+CREATE TABLE casts (
+	cast_id serial PRIMARY KEY,
+	cast_name varchar(30)
+);
+
+CREATE TABLE join_movie_cast (
+	cast_id integer,
+	movie_id integer
+	
+
 );
 
 
 -- TO DO: change this similar to genre
-create table movie_casts(
-	movie_id int,
-	cast_name varchar (250),
-	primary key (movie_id, cast_name)
-);
+-- create table movie_casts(
+-- 	movie_id int,
+-- 	cast_name varchar (250),
+-- 	primary key (movie_id, cast_name)
+-- );
 
-create table movie_directors(
-	movie_id int,
-	director_name varchar(250),
-	primary key (movie_id, director_name)
-);
+-- create table movie_directors(
+-- 	movie_id int,
+-- 	director_name varchar(250),
+-- 	primary key (movie_id, director_name)
+-- );
 -- Will change this part later
 
 
@@ -89,3 +113,4 @@ CREATE TABLE Customer (
 	
 	CONSTRAINT ck_cust_mail_or_phone CHECK ((email IS NOT NULL) OR (phone_number IS NOT NULL))
 );
+
