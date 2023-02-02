@@ -8,7 +8,7 @@ CREATE TABLE Movie (
 
 	-- may be moved to another join table
 	-- director varchar(50),
-	casts varchar(50)
+	-- casts varchar(50)
 );
 
 CREATE TABLE Genre (
@@ -19,22 +19,34 @@ CREATE TABLE Genre (
 CREATE TABLE join_movie_genre (
 	movie_id integer,
 	genre_id integer
+	
+);
+
+CREATE TABLE Director (
+	director_id serial PRIMARY KEY,
+	director_name varchar(30)
+);
+
+CREATE TABLE join_movie_director (
+	director_id integer,
+	movie_id integer
+	
+);
+
+CREATE TABLE Casts (
+	cast_id serial PRIMARY KEY,
+	cast_name varchar(30)
+);
+
+CREATE TABLE join_movie_cast (
+	cast_id integer,
+	movie_id integer
+	
+
 );
 
 
--- TO DO: change this similar to genre
-create table movie_casts(
-	movie_id int,
-	cast_name varchar (250),
-	primary key (movie_id, cast_name)
-);
-
-create table movie_directors(
-	movie_id int,
-	director_name varchar(250),
-	primary key (movie_id, director_name)
-);
--- Will change this part later
+--- End of movie related
 
 
 CREATE TABLE Manager (
@@ -89,3 +101,4 @@ CREATE TABLE Customer (
 	
 	CONSTRAINT ck_cust_mail_or_phone CHECK ((email IS NOT NULL) OR (phone_number IS NOT NULL))
 );
+
