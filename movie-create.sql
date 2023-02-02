@@ -1,10 +1,10 @@
 CREATE TABLE Movie (
 	movie_id serial PRIMARY KEY,
-	title varchar(100) NOT NULL,
+	title varchar(200) NOT NULL,
 	description text,
 	age_restriction varchar(5),	-- P, C13, C16, C18, N/A
 	duration interval NOT NULL,
-	release_date date,
+	release_date date
 
 	-- may be moved to another join table
 	-- director varchar(50),
