@@ -4,7 +4,7 @@ CREATE TABLE Movie (
 	description text,
 	age_restriction varchar(5),	-- P, C13, C16, C18, N/A
 	duration interval NOT NULL,
-	premiere_date date NOT NULL,
+	release_date date,
 
 	-- may be moved to another join table
 	-- director varchar(50),
