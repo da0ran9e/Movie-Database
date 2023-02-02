@@ -1,3 +1,8 @@
+Data was taken from: https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset
+and then processed in Jupyter Notebook (Python) file:
+	DataProcessing.ipynb
+
+
 To load data into database, first open PSQL Tool (Next to Query Tool when right-clicking)
 
 1. Locate /proj folder and move the PostgreSQL server to there
