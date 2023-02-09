@@ -24,25 +24,24 @@ CREATE TABLE join_movie_genre (
 
 CREATE TABLE Director (
 	director_id serial PRIMARY KEY,
-	director_name varchar(30)
+	director_name varchar(50)
 );
 
 CREATE TABLE join_movie_director (
-	director_id integer,
-	movie_id integer
-	
+	movie_id integer,
+	director_id integer
 );
 
 CREATE TABLE Casts (
 	cast_id serial PRIMARY KEY,
-	cast_name varchar(30)
+	cast_name varchar(50)
 );
 
 CREATE TABLE join_movie_cast (
-	cast_id integer,
-	movie_id integer
+	movie_id integer,
+	cast_id integer
 	
-
+	-- cast_character varchar(100)
 );
 
 
