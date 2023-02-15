@@ -7,12 +7,12 @@ ALTER TABLE join_movie_genre
 ALTER TABLE join_movie_director
 	ADD CONSTRAINT pk_join_md PRIMARY KEY (movie_id, director_id),
 	ADD CONSTRAINT fk_join_md__movie_id FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE,
-	ADD CONSTRAINT fk_join_md__director_id FOREIGN KEY (director_id) REFERENCES director(director_id) ON DELETE CASCADE;
+	ADD CONSTRAINT fk_join_md__director_id FOREIGN KEY (director_id) REFERENCES Director(director_id) ON DELETE CASCADE;
 
 ALTER TABLE join_movie_cast
 	ADD CONSTRAINT pk_join_mc PRIMARY KEY (movie_id, cast_id),
 	ADD CONSTRAINT fk_join_mc__movie_id FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE,
-	ADD CONSTRAINT fk_join_mc__cast_id FOREIGN KEY (cast_id) REFERENCES casts(cast_id) ON DELETE CASCADE;
+	ADD CONSTRAINT fk_join_mc__cast_id FOREIGN KEY (cast_id) REFERENCES Casts(cast_id) ON DELETE CASCADE;
 
 /*
 
@@ -25,7 +25,7 @@ ALTER TABLE Room
 */
 
 ALTER TABLE Seat
-	ADD CONSTRAINT fk_seat__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE SET NULL;
+	ADD CONSTRAINT fk_seat__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE CASCADE;
 
 ALTER TABLE Screening
 	ADD CONSTRAINT fk_screen__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE SET NULL,
