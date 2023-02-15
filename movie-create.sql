@@ -95,9 +95,9 @@ CREATE TABLE Ticket (
 CREATE TABLE Customer (
 	user_id serial PRIMARY KEY,
 	name varchar(50) NOT NULL,
-	phone_number varchar(12),
+	phone_number varchar(15),
 	email varchar(100),
-	password varchar(100),
+	password varchar(100) NOT NULL,
 	
 	CONSTRAINT ck_cust_mail_or_phone CHECK ((email IS NOT NULL) OR (phone_number IS NOT NULL))
 );

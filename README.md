@@ -19,7 +19,10 @@ WHERE Valid;
 ## Database description
 something something
 how to load database into pgAdmin4 / into app
-
+Credit:
+Movie Dataset: https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset
+Customer Dataset: https://www.briandunning.com/sample-data/
+Password Dataset: https://www.kaggle.com/datasets/shivamb/10000-most-common-passwords
 
 ## Using the program
 How to use the app / program
