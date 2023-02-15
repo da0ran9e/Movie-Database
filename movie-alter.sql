@@ -14,11 +14,15 @@ ALTER TABLE join_movie_cast
 	ADD CONSTRAINT fk_join_mc__movie_id FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE CASCADE,
 	ADD CONSTRAINT fk_join_mc__cast_id FOREIGN KEY (cast_id) REFERENCES casts(cast_id) ON DELETE CASCADE;
 
+/*
+
 ALTER TABLE Manager
 	ADD CONSTRAINT fk_manager__cinema_id FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id) ON DELETE SET NULL;
 
 ALTER TABLE Room
 	ADD CONSTRAINT fk_room__cinema_id FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id) ON DELETE SET NULL;
+
+*/
 
 ALTER TABLE Seat
 	ADD CONSTRAINT fk_seat__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE SET NULL;
