@@ -1,7 +1,7 @@
 CREATE TABLE Movie (
 	movie_id serial PRIMARY KEY,
 	title varchar(200) NOT NULL,
-	description text,
+	description text NOT NULL UNIQUE,
 	age_restriction varchar(5),	-- P, C13, C16, C18, N/A
 	duration interval NOT NULL,
 	release_date date
@@ -68,7 +68,7 @@ CREATE TABLE Screening (
 	screen_id serial PRIMARY KEY,
 	screen_date date NOT NULL,
 	start_time time NOT NULL,
-	available_seat integer NOT NULL,
+	available_seat integer NOT NULL DEFAULT 150,
 	screen_type varchar(10) NOT NULL,
 	room_id integer NOT NULL,
 	movie_id integer NOT NULL
@@ -76,7 +76,7 @@ CREATE TABLE Screening (
 
 CREATE TABLE Seat (
 	seat_id serial PRIMARY KEY,
-	row char(1) NOT NULL,
+	row varchar(5) NOT NULL,
 	num integer NOT NULL,
 	room_id integer NOT NULL
 );
