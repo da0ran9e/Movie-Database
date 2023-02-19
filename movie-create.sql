@@ -4,7 +4,8 @@ CREATE TABLE Movie (
 	description text,
 	age_restriction varchar(5),	-- P, C13, C16, C18, N/A
 	duration interval NOT NULL,
-	release_date date
+	release_date date,
+	poster_url varchar(1000)
 );
 
 CREATE TABLE Genre (
@@ -30,7 +31,7 @@ CREATE TABLE join_movie_director (
 
 CREATE TABLE Casts (
 	cast_id serial PRIMARY KEY,
-	cast_name varchar(50)
+	cast_name varchar(100)
 );
 
 CREATE TABLE join_movie_cast (
