@@ -147,3 +147,24 @@ CREATE OR REPLACE TRIGGER solve_screening_problem
 BEFORE INSERT ON screening
 FOR EACH ROW
 EXECUTE PROCEDURE screening_problem();
+
+
+--7. Chặn việc xóa screening khi đã có người đặt vé
+CREATE OR REPLACE FUNCTION prevent_delete_screening()
+RETURNS TRIGGER LANGUAGE plpgsql
+AS $$
+BEGIN
+	if(NEW.available_seat < 150) then
+		raise notice 'This screening was be booked so it can not be deleted';
+		return null;
+	end if;
+	return new;
+END
+$$;
+
+CREATE OR REPLACE TRIGGER prevent_delete_screening
+BEFORE DELETE ON screening
+FOR EACH ROW
+EXECUTE PROCEDURE prevent_delete_screening();
+
+--8. Chưa viết được trigger chặn xóa phòng đã được book
