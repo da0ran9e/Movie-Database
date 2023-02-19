@@ -85,4 +85,65 @@ EXECUTE PROCEDURE cancel_ticket();
 
 
 
--- 
+--5. Trigger không cho phép add seat từ ngoài vào
+
+CREATE OR REPLACE FUNCTION unable_to_insert_seat()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS 
+$$
+DECLARE 
+	a int := (select count(*) from seat where room_id = NEW.room_id);
+BEGIN
+	a := (select count(*) from seat where room_id = NEW.room_id);
+	if(a > 149) then
+		raise notice 'There is no seat like that';
+		return null;
+	end if;
+	return new;
+END
+$$;
+
+CREATE OR REPLACE TRIGGER unable_to_insert_seat_outside
+BEFORE INSERT ON seat
+FOR EACH ROW
+EXECUTE PROCEDURE unable_to_insert_seat();
+
+
+--6. Cấm xung đột screening
+CREATE OR REPLACE FUNCTION screening_problem()
+RETURNS TRIGGER LANGUAGE plpgsql
+AS $$
+DECLARE 
+	a record;
+	b time;
+BEGIN
+	b := (select (new.start_time + duration + '00:15:00') from movie where new.movie_id = movie.movie_id);
+	for a in (select start_time as s, (start_time + duration + '00:15:00') as sd
+			  from screening, movie 
+			  where screen_date = new.screen_date 
+			  	and room_id = new.room_id 
+			  	and screening.movie_id = movie.movie_id ) loop
+		if(a.sd > new.start_time and a.s <= new.start_time) then 
+			raise notice 'The screening conflicts with another one';
+			return null;
+		end if;
+		
+		if(a.sd <= b and new.start_time <= a.s) then
+			raise notice 'The screening conflicts with another one';
+			return null;
+		end if;
+		
+		if(new.start_time <= a.s and a.s < b) then
+			raise notice 'The screening conflicts with another one';
+			return null;
+		end if;
+		
+	end loop;
+	return new;
+END
+$$;
+CREATE OR REPLACE TRIGGER solve_screening_problem
+BEFORE INSERT ON screening
+FOR EACH ROW
+EXECUTE PROCEDURE screening_problem();
