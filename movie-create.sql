@@ -1,7 +1,7 @@
 CREATE TABLE Movie (
 	movie_id serial PRIMARY KEY,
 	title varchar(200) NOT NULL,
-	description text NOT NULL UNIQUE,
+	description text,
 	age_restriction varchar(5),	-- P, C13, C16, C18, N/A
 	duration interval NOT NULL,
 	release_date date
