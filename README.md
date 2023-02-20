@@ -17,15 +17,19 @@ WHERE Valid;
 ```
 
 ## Credits & References
-Movie Dataset: https://www.kaggle.com/datasets/rezaunderfit/48k-imdb-movies-data\
-Customer Dataset: https://www.briandunning.com/sample-data/\
-Password Dataset: https://www.kaggle.com/datasets/shivamb/10000-most-common-passwords\
+Movie Dataset: https://www.kaggle.com/datasets/rezaunderfit/48k-imdb-movies-data
+
+Customer Dataset: https://www.briandunning.com/sample-data
+
+Password Dataset: https://www.kaggle.com/datasets/shivamb/10000-most-common-passwords
 
 ## Using the program
 ### Viewing the schema models
 The diagram for the database model can be viewed using the files ending in `.erdplus`  
 
 Go to https://erdplus.com/ to sign up for an account. From the navigation bar, go to Documents > Import, then import the downloaded `.erdplus` file. Upon successful upload, the diagram should be ready to view.
+
+Another way of doing this is to create the database first as follows. Then right-click the created database and choose "Generate ERD" from the dropdown menu to view the diagram inside PgAdmin4.
 
 ### Initialize the database
 To create the database, open PgAdmin4, type in your master password, right click the side bar and choose "Create new database" from the dropdown menu.
