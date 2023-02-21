@@ -1,0 +1,85 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.movie-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.movie-poster-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.movie-poster-wrapper > .btn{
+  display: none;
+  position: absolute;
+  left:50%;
+  bottom: 5%;
+  transform: translate(-50%, -50%);
+}
+
+.movie-poster-wrapper:hover .btn {
+  display: inline-block;
+}
+
+.movie-poster-wrapper:hover .movie-poster-item {
+  opacity: 0.5;
+  transition: 0.3s;
+}
+
+.movie-poster-item {
+  object-fit: cover;
+  width: 240px;
+  height: 360px;
+  background-color: black;
+}
+
+.movie-poster-bg {
+  object-fit: cover;
+  object-position: 50% 0;
+  filter: brightness(50%);
+  width: 100%;
+  height: 60vh;
+  background-color: black;
+}
+
+.form-dark-blue {
+  background-color: #011627;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

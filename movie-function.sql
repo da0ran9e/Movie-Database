@@ -146,3 +146,46 @@ END;
 $$
 LANGUAGE plpgsql;
 
+
+CREATE OR REPLACE FUNCTION get_genres(movie_id integer)
+RETURNS SETOF Genre AS
+$$
+BEGIN
+	RETURN QUERY
+	SELECT G.genre_id, G.genre_name 
+	FROM Genre G
+	JOIN join_movie_genre J ON J.genre_id=G.genre_id
+	JOIN Movie M ON J.movie_id=M.movie_id
+	WHERE M.movie_id=$1;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_directors(movie_id integer)
+RETURNS SETOF Director AS
+$$
+BEGIN
+	RETURN QUERY
+	SELECT D.director_id, D.director_name 
+	FROM Director D
+	JOIN join_movie_director J ON J.director_id=D.director_id
+	JOIN Movie M ON J.movie_id=M.movie_id
+	WHERE M.movie_id=$1;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_casts(movie_id integer)
+RETURNS SETOF Casts AS
+$$
+BEGIN
+	RETURN QUERY
+	SELECT C.cast_id, C.cast_name 
+	FROM Casts C
+	JOIN join_movie_cast J ON J.cast_id=C.cast_id
+	JOIN Movie M ON J.movie_id=M.movie_id
+	WHERE M.movie_id=$1;
+END;
+$$
+LANGUAGE plpgsql;
+

@@ -7,13 +7,27 @@ Edit this README.md using [`markdown`](https://www.markdownguide.org) language.
 
 
 ## Environment
-pgAdmin4 
-```sql
--- Code here on how to set up environment
+Node.js
 
-SELECT E.install_instruction
-FROM Environment E
-WHERE Valid;
+Follow instructions to install Node Version Manager (nvm):
+	[For windows](https://github.com/coreybutler/nvm-windows)
+	[For linux](https://github.com/coreybutler/nvm-windows)
+Activate nvm in `/web/server` (or follow instruction provided in the links):
+```
+nvm install latest
+nvm on
+```
+
+In directory `/web/server` run Windows Powershell, with command:
+```
+npm install
+node index.js
+```
+
+In directory `/web/client` run another Windows Powershell, with command:
+```
+npm install
+npm start
 ```
 
 ## Credits & References
