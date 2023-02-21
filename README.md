@@ -14,42 +14,42 @@ Follow instructions to install Node Version Manager (nvm):
 - [For linux](https://github.com/coreybutler/nvm-windows)
 
 Activate nvm in `/web/server` (or follow instruction provided in the links):
-```
-nvm install latest
-nvm on
-```
+	```
+	nvm install latest
+	nvm on
+	```
 
-In directory `/web/server` run Windows Powershell, with command:
-```
-npm install
-node index.js
-```
+1. In directory `/web/server` run Windows Powershell, with command:
+	```
+	npm install
+	node index.js
+	```
 
-In directory `/web/client` run another Windows Powershell, with command:
-```
-npm install
-npm start
-```
+2. In directory `/web/client` run another Windows Powershell, with command:
+	```
+	npm install
+	npm start
+	```
 
-Edit the user, password and database name in `/web/server/db.js`
-```js
-const Pool = require("pg").Pool;
+3. Edit the user, password and database name in `/web/server/db.js`
+	```js
+	const Pool = require("pg").Pool;
 
-const pool = new Pool({
-	user: "user_name",
-	password: "password",
-	host: "localhost",
-	port: 5432,
-	database: "database_name"
-});
+	const pool = new Pool({
+		user: "user_name",
+		password: "password",
+		host: "localhost",
+		port: 5432,
+		database: "database_name"
+	});
 
-module.exports = pool;
-```
+	module.exports = pool;
+	```
 
-Load all data into postgres with PSQL command in the root folder `/mdb`:
-```
-\i load-all.sql
-```
+4. Load all data into postgres with PSQL command in the root folder `/mdb`:
+	```
+	\i load-all.sql
+	```
 
 ## Credits & References
 Movie Dataset: https://www.kaggle.com/datasets/rezaunderfit/48k-imdb-movies-data
