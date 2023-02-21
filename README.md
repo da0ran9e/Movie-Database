@@ -31,6 +31,21 @@ npm install
 npm start
 ```
 
+Edit the user, password and database name in `/web/server/db.js`
+```js
+const Pool = require("pg").Pool;
+
+const pool = new Pool({
+	user: "user_name",
+	password: "password",
+	host: "localhost",
+	port: 5432,
+	database: "database_name"
+});
+
+module.exports = pool;
+```
+
 ## Credits & References
 Movie Dataset: https://www.kaggle.com/datasets/rezaunderfit/48k-imdb-movies-data
 
