@@ -30,6 +30,22 @@ LANGUAGE plpgsql;
 
 
 
+-- LOGIN
+CREATE OR REPLACE FUNCTION login_exist_user(email_or_phone TEXT)
+RETURNS SETOF Customer AS
+$$
+BEGIN
+	RETURN QUERY
+	SELECT *
+	FROM Customer C
+	WHERE C.email=email_or_phone OR C.phone_number=email_or_phone;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+
+
 -- CLIENT
 CREATE OR REPLACE FUNCTION client_get_screening(movie_id integer, day date)
 RETURNS SETOF Screening AS

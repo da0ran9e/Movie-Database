@@ -102,4 +102,3 @@ CREATE TABLE Customer (
 	
 	CONSTRAINT ck_cust_mail_or_phone CHECK ((email IS NOT NULL) OR (phone_number IS NOT NULL))
 );
-
