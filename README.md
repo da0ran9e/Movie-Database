@@ -10,8 +10,9 @@ Edit this README.md using [`markdown`](https://www.markdownguide.org) language.
 Node.js
 
 Follow instructions to install Node Version Manager (nvm):
-	[For windows](https://github.com/coreybutler/nvm-windows)
-	[For linux](https://github.com/coreybutler/nvm-windows)
+- [For windows](https://github.com/coreybutler/nvm-windows)
+- [For linux](https://github.com/coreybutler/nvm-windows)
+
 Activate nvm in `/web/server` (or follow instruction provided in the links):
 ```
 nvm install latest
