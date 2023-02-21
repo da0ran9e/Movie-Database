@@ -70,7 +70,7 @@ CREATE TABLE Screening (
 	screen_date date NOT NULL,
 	start_time time NOT NULL,
 	available_seat integer NOT NULL DEFAULT 150,
-	--screen_type varchar(10) NOT NULL,
+	screen_type varchar(10) NOT NULL,
 	room_id integer NOT NULL,
 	movie_id integer NOT NULL
 );
