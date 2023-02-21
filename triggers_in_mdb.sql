@@ -168,3 +168,21 @@ FOR EACH ROW
 EXECUTE PROCEDURE prevent_delete_screening();
 
 --8. Chưa viết được trigger chặn xóa phòng đã được book
+
+
+
+-- Error with input
+CREATE OR REPLACE FUNCTION reset_customer_id()
+RETURNS TRIGGER 
+AS $$
+BEGIN
+	PERFORM setval(pg_get_serial_sequence('Customer', 'user_id'), coalesce(max(user_id),0) + 1, false) FROM Customer;
+	RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER reset_serial_customer_id
+BEFORE INSERT ON Customer
+EXECUTE FUNCTION reset_customer_id();
