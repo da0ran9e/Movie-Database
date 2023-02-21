@@ -56,30 +56,62 @@ END;
 $$
 
 --- TICKET-RELATED FUNCTIONS --- 
-CREATE OR REPLACE FUNCTION GetOrderedTicket(user_email text[])
+CREATE OR REPLACE FUNCTION GetOrderedTicketbyEmail(current_user_email text[])
 -- Do we keep track of past tickets for users as well, or just keep only the ticket available in future screening?
 RETURNS TABLE AS
 $$
 BEGIN
 	SELECT *
 	FROM ticket 
-	WHERE email = user_email
+	WHERE email = current_user_email
+	GROUP BY screen_id
 END;
 $$
 
-CREATE OR REPLACE FUNCTION CancelTicket()
-RETURNS BOOLEAN AS
-$$
-BEGIN
-	
-END;
-$$
-
-CREATE OR REPLACE FUNCTION BookTicket()
+CREATE OR REPLACE FUNCTION GetOrderedTicketbyID(current_user_id int)
 RETURNS TABLE AS
 $$
 BEGIN
+	SELECT *
+	FROM ticket 
+	WHERE user_id = current_user_id
+	GROUP BY screen_id
+END;
+$$
+
+CREATE OR REPLACE FUNCTION CancelTicket(cancel_ticket_id int)
+RETURNS BOOLEAN AS
+$$
+BEGIN
+	IF EXISTS (
+		SELECT * FROM ticket t JOIN screening sn ON t.screen_id = sn.screen_id
+		WHERE t.ticket_id = t.cancel_ticket_id AND sn.screen_date >= CURRENT_DATE)
+        DELETE FROM ticket
+		WHERE ticket.ticket_id = cancel_ticket_id
+        IF @@ROWCOUNT > 0 
+            RAISE NOTICE 'Deletion successful.';
+            RETURN TRUE
+        ELSE 
+            RAISE NOTICE 'Deletion failed.';
+            RETURN FALSE
+    ELSE
+		BEGIN
+            RAISE NOTICE 'No ticket found with the ID (%)', cancel_ticket_id;
+            RETURN FALSE
+        END
 	
+END;
+$$
+
+CREATE OR REPLACE FUNCTION BookTicket(book_movie_id int, booking_date date, quantity int)
+RETURNS BOOLEAN AS
+$$
+BEGIN
+	--Check if the movie exists, the movie has valid screening, and enough seats available for booking
+	DECLARE @valid_booking int
+	SET @valid_booking = 
+		(IF EXISTS (SELECT *)
+		)
 END;
 $$
 
