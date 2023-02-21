@@ -46,6 +46,11 @@ const pool = new Pool({
 module.exports = pool;
 ```
 
+Load all data into postgres with PSQL command in the root folder `/mdb`:
+```
+\i load-all.sql
+```
+
 ## Credits & References
 Movie Dataset: https://www.kaggle.com/datasets/rezaunderfit/48k-imdb-movies-data
 

@@ -5,3 +5,4 @@
 
 \cd proj
 \i load-data.sql
+\cd ..

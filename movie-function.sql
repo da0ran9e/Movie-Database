@@ -28,6 +28,20 @@ END;
 $$
 LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION get_films()
+RETURNS SETOF Movie AS
+$$
+BEGIN
+	RETURN QUERY
+	SELECT *
+	FROM Movie
+	WHERE release_date > '2015-01-01'
+	ORDER BY release_date DESC;
+END;
+$$
+LANGUAGE plpgsql;
+
+
 
 
 -- LOGIN
