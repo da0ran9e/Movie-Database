@@ -94,7 +94,7 @@ $$
 LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION client_get_price(screen_id integer, day date)
+CREATE OR REPLACE FUNCTION client_get_price(screen_id integer)
 RETURNS INT AS
 $$
 DECLARE
@@ -103,20 +103,10 @@ DECLARE
 	screen_time INT;
 	room_type VARCHAR(10);
 BEGIN
-	day_of_week := EXTRACT(DOW FROM day) + 1;
-
-	SELECT EXTRACT(HOUR FROM SR.start_time), R.room_type
-	INTO STRICT screen_time, room_type
+	SELECT EXTRACT(DOW FROM SR.screen_date) + 1, EXTRACT(HOUR FROM SR.start_time), R.room_type
+	INTO STRICT day_of_week, screen_time, room_type
 	FROM Screening SR JOIN Room R ON SR.room_id=R.room_id
-	WHERE SR.screen_id=screen_id;
-
-	EXCEPTION
-		WHEN NO_DATA_FOUND THEN
-			RAISE EXCEPTION 'Screening % not found', screen_id;
-		WHEN TOO_MANY_ROWS THEN
-			RAISE EXCEPTION 'Screening % not unique', screen_id;
-		WHEN OTHERS THEN
-			RAISE EXCEPTION 'Invalid room in Screening %', screen_id;
+	WHERE SR.screen_id=$1;
 
 	-- 1=Sunday, 2-7=Mon-Sat
 	IF day_of_week BETWEEN 2 AND 5 THEN
@@ -142,9 +132,41 @@ BEGIN
 	END IF;
 
 	RETURN price;
+
+	EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+			RAISE EXCEPTION 'Screening % not found', screen_id;
+		WHEN TOO_MANY_ROWS THEN
+			RAISE EXCEPTION 'Screening % not unique', screen_id;
 END;
 $$
 LANGUAGE plpgsql;
+
+-- Auto calculate price
+CREATE OR REPLACE FUNCTION auto_price()
+RETURNS TRIGGER LANGUAGE plpgsql
+AS $$
+DECLARE 
+	price int;
+	day_of_week int;
+	screen_time int;
+	roomtype varchar(10);
+BEGIN
+	UPDATE Ticket 
+	SET total_price = client_get_price(NEW.screen_id)
+	WHERE T.ticket_id=NEW.ticket_id;
+	
+	RETURN NEW;
+END
+$$;
+
+CREATE OR REPLACE TRIGGER auto_price
+AFTER INSERT ON Ticket
+FOR EACH ROW
+EXECUTE PROCEDURE auto_price();
+
+
+
 
 
 CREATE OR REPLACE FUNCTION get_genres(movie_id integer)

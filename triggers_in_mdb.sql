@@ -1,72 +1,48 @@
 -- 1. Auto add seat when insert room
-CREATE OR REPLACE FUNCTION add_seat() RETURNS TRIGGER 
-LANGUAGE plpgsql 
-AS 
+CREATE OR REPLACE FUNCTION add_seat()
+RETURNS TRIGGER AS 
 $$
 DECLARE 
-	ch record;
+	ch CHAR(1);
 BEGIN
-		for ch in (select a FROM regexp_split_to_table('ABCDEFGHIJ', '') AS a) loop
-			for n in 1..15 loop
-				INSERT INTO seat VALUES (DEFAULT, ch, n, NEW.room_id);
-			end loop;
-		end loop;
-		return new;
-END
-$$;
+		FOREACH ch IN ARRAY regexp_split_to_array('ABCDEFGHIJ', '') LOOP
+			FOR n in 1..15 LOOP
+				INSERT INTO Seat VALUES (DEFAULT, ch, n, NEW.room_id);
+			END LOOP;
+		END LOOP;
+		RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER seat_addition
-AFTER INSERT ON room
+CREATE OR REPLACE TRIGGER tr_add_seat
+AFTER INSERT ON Room
 FOR EACH ROW
 EXECUTE PROCEDURE add_seat();
-
-
-
-
-
-
--- 2. Set available seat to 150 when create a screening
-
-CREATE OR REPLACE FUNCTION available_seat_default_150()
-RETURNS TRIGGER LANGUAGE plpgsql
-AS $$
-BEGIN
-	UPDATE screening SET available_seat = 150
-	WHERE screen_id = NEW.screen_id;
-	RETURN NEW;
-END
-$$;
-
-CREATE OR REPLACE TRIGGER set_available_seat
-AFTER INSERT ON screening
-FOR EACH ROW
-EXECUTE PROCEDURE available_seat_default_150();
-
-
 
 
 
 -- Trigger: Đặt thêm seat thì giảm available seat ở Screening, 
 -- giảm seat thì tăng available seat ở Screening
 
---3. Book ticket
+--2. Book ticket
 CREATE OR REPLACE FUNCTION book_ticket() RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
 BEGIN
-	UPDATE screening SET available_seat = available_seat - 1
+	UPDATE Screening SET available_seat = available_seat - 1
 	WHERE screen_id = NEW.screen_id;
 	RETURN NEW;
 END
 $$;
 
-CREATE OR REPLACE TRIGGER book_ticket_trigger 
-AFTER INSERT ON ticket
+CREATE OR REPLACE TRIGGER tr_book_ticket
+AFTER INSERT ON Ticket
 FOR EACH ROW
 EXECUTE PROCEDURE book_ticket();
 
 
---4. Cancel ticket
+--3. Cancel ticket
 CREATE OR REPLACE FUNCTION cancel_ticket() RETURNS TRIGGER
 LANGUAGE plpgsql
 AS $$
@@ -77,37 +53,35 @@ BEGIN
 END
 $$;
 
-CREATE OR REPLACE TRIGGER cancel_ticket_trigger 
-AFTER DELETE ON ticket
+CREATE OR REPLACE TRIGGER tr_cancel_ticket
+AFTER DELETE ON Ticket
 FOR EACH ROW
 EXECUTE PROCEDURE cancel_ticket();
 
 
 
-
 --5. Trigger không cho phép add seat từ ngoài vào
-
 CREATE OR REPLACE FUNCTION unable_to_insert_seat()
 RETURNS TRIGGER
 LANGUAGE plpgsql
 AS 
 $$
 DECLARE 
-	a int := (select count(*) from seat where room_id = NEW.room_id);
+	a int := (select count(*) from Seat where room_id = NEW.room_id);
 BEGIN
-	a := (select count(*) from seat where room_id = NEW.room_id);
-	if(a > 149) then
-		raise notice 'There is no seat like that';
-		return null;
-	end if;
-	return new;
+	IF (a > 149) AND (TG_TABLE_NAME = 'SEAT') THEN -- If cascaded from room then bypass
+		RAISE NOTICE 'CANNOT INSERT/DELETE SEAT';
+		RETURN NULL;
+	END IF;
+	RETURN NEW;
 END
 $$;
 
-CREATE OR REPLACE TRIGGER unable_to_insert_seat_outside
-BEFORE INSERT ON seat
+CREATE OR REPLACE TRIGGER tr_unable_to_insert_seat
+BEFORE INSERT OR DELETE ON Seat
 FOR EACH ROW
 EXECUTE PROCEDURE unable_to_insert_seat();
+
 
 
 --6. Cấm xung đột screening
@@ -171,7 +145,7 @@ EXECUTE PROCEDURE screening_problem();
 
 
 
--- Error with input
+-- 9. Error with input
 CREATE OR REPLACE FUNCTION reset_customer_id()
 RETURNS TRIGGER 
 AS $$

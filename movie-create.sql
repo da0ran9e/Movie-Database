@@ -89,7 +89,8 @@ CREATE TABLE Ticket (
 	seat_id integer NOT NULL,
 	user_id integer, -- NOT NULL -- Can be null with people having no membership
 
-	CONSTRAINT ck_ticket_contact CHECK ((email IS NOT NULL) OR (user_id IS NOT NULL))
+	CONSTRAINT ck_ticket_contact CHECK ((email IS NOT NULL) OR (user_id IS NOT NULL)),
+	CONSTRAINT ck_ticket_no_duplicate UNIQUE(screen_id, seat_id)
 );
 
 CREATE TABLE Customer (
