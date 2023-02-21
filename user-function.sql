@@ -20,6 +20,7 @@ END;
 $$
 
 CREATE OR REPLACE FUNCTION SearchMovieByAge(age int)
+RETURNS TABLE AS
 $$
 BEGIN
 	SELECT *
@@ -29,6 +30,7 @@ END;
 $$
 
 CREATE OR REPLACE FUNCTION SearchMovieByDuration(duration interval)
+RETURNS TABLE AS
 $$
 BEGIN
 	SELECT *
