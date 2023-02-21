@@ -126,7 +126,7 @@ BEGIN
 			price := 75000;
 		ELSE
 			price := 60000;
-		ENDIF;
+		END IF;
 	ELSE
 		IF screen_time BETWEEN 7 AND 12 THEN
 			price := 65000;
@@ -134,7 +134,7 @@ BEGIN
 			price := 85000;
 		ELSE
 			price := 70000;
-		ENDIF;
+		END IF;
 	END IF;
 
 	IF room_type = '3D' THEN
