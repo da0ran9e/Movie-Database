@@ -14,10 +14,10 @@ Follow instructions to install Node Version Manager (nvm):
 - [For linux](https://github.com/coreybutler/nvm-windows)
 
 Activate nvm in `/web/server` (or follow instruction provided in the links):
-	```
-	nvm install latest
-	nvm on
-	```
+```
+nvm install latest
+nvm on
+```
 
 1. In directory `/web/server` run Windows Powershell, with command:
 	```
