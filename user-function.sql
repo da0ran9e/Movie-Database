@@ -99,7 +99,6 @@ BEGIN
             RAISE NOTICE 'No ticket found with the ID (%)', cancel_ticket_id;
             RETURN FALSE
         END
-	
 END;
 $$
 
