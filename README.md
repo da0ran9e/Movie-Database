@@ -31,13 +31,13 @@ nvm on
 	npm start
 	```
 
-3. Edit the user, password and database name in `/web/server/db.js`
+3. Update the user, password and database name with yours in `/web/server/db.js`
 	```js
 	const Pool = require("pg").Pool;
 
 	const pool = new Pool({
 		user: "user_name",
-		password: "password",
+		password: "pass_word",
 		host: "localhost",
 		port: 5432,
 		database: "database_name"
@@ -46,7 +46,7 @@ nvm on
 	module.exports = pool;
 	```
 
-4. Load all data into postgres with PSQL command in the root folder `/mdb`:
+4. Load all data into postgres database with PSQL command in the root folder `/mdb`:
 	```
 	\i load-all.sql
 	```

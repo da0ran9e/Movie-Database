@@ -68,7 +68,7 @@ BEGIN
 	RETURN QUERY
 	SELECT *
 	FROM Screening SR
-	WHERE SR.movie_id=movie_id AND screen_date=day;
+	WHERE SR.movie_id=$1 AND SR.screen_date=$2;
 END;
 $$
 LANGUAGE plpgsql;
@@ -221,6 +221,20 @@ BEGIN
 	JOIN join_movie_cast J ON J.cast_id=C.cast_id
 	JOIN Movie M ON J.movie_id=M.movie_id
 	WHERE M.movie_id=$1;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_seats_from_screen(screen_id integer)
+RETURNS SETOF Seat AS
+$$
+BEGIN
+	RETURN QUERY
+	SELECT S.seat_id, S.row, S.num, S.room_id 
+	FROM Seat S 
+	JOIN Room R ON R.room_id=S.room_id
+	JOIN Screening SR ON SR.room_id=R.room_id
+	WHERE SR.screen_id=$1;
 END;
 $$
 LANGUAGE plpgsql;
