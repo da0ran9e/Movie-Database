@@ -32,14 +32,14 @@ const DescMovie = () => {
 
 	useEffect(() => {
 		getMovieById();
-	}, []);
+	}, [movie_id]);
 
 	function stringTime (h, m) {
 		var str = "";
 
 		if (h > 1 || m > 1) {
 			str += h*60 + m + " minutes";
-		} else if (m = 1) {
+		} else if (m === 1) {
 			str += m + " minute";
 		}
 

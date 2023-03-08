@@ -12,8 +12,8 @@ router.post("/register", validInfo, async (req, res) => {
 		const { name, email, phone, password } = req.body;
 
 		// 2. Check user exist (email/phone), throw error
-		const existEmail = await pool.query("SELECT login_exist_user($1);", [email]);
-		const existPhone = await pool.query("SELECT login_exist_user($1);", [phone]);
+		const existEmail = await pool.query("SELECT check_exist_user($1);", [email]);
+		const existPhone = await pool.query("SELECT check_exist_user($1);", [phone]);
 		// if user already exist or somnhth
 		if (existEmail.rows.length > 0){
 			return res.status(401).json("Email already taken.");
@@ -53,7 +53,7 @@ router.post("/login", validInfo, async (req, res) => {
 		const { email_phone, password } = req.body;
 
 		// 2. Check user exist
-		const user = await pool.query("SELECT * FROM login_exist_user($1);", [email_phone]);
+		const user = await pool.query("SELECT * FROM check_exist_user($1);", [email_phone]);
 		if (user.rows.length === 0){
 			return res.status(401).json("PASSWORD OR EMAIL IS INCORRECT");
 		} else if (user.rows.length > 1){

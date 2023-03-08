@@ -37,6 +37,7 @@ router.post("/addscreening", async (req, res) => {
 		const queryInsert = `INSERT INTO Screening (screen_date, start_time, room_id, movie_id)
 												VALUES ($1, $2, $3, $4) RETURNING *;`
 		const valueInsert = [screen_date, start_time, room_id, movie_id];
+		console.log(valueInsert);
 		const inserted = await pool.query(queryInsert, valueInsert);
 		if (inserted.rows.length === 0){
 			return res.status(400).json("INPUT ERROR");

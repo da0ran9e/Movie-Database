@@ -5,7 +5,7 @@ import moment from "moment";
 
 const Booking = ({ isAuth }) => {
 	const [ticket, setTicket] = useState({
-		select_day: moment().format('YYYY-MM-DD'),
+		select_day: moment().subtract(1, 'days').format('YYYY-MM-DD'),
 		screen_id: "",
 		room_id: "",
 		room_type: "",
@@ -306,7 +306,7 @@ const Booking = ({ isAuth }) => {
 	return (
 		<Fragment>
 			<div className="container-md border-bottom">
-				<h2 className="text-center display-3 m-3">⚜ Booking ⚜</h2>
+				<h2 className="text-center display-3 my-3">⚜ Booking ⚜</h2>
 				<h4>Select a date:</h4>
 				<input
 					type="date"

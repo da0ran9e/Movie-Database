@@ -27,7 +27,7 @@ function Home() {
 						/>
 					</div>
 					<div className="col-lg-5">
-						<h1 className="font-weight-light">Home</h1>
+						<h1 className="display-3 my-3">Home</h1>
 						<p>
 							Welcome to our cinema website, your ultimate destination for movie lovers!
 							Whether you're looking for the latest Hollywood blockbusters, timeless classics,

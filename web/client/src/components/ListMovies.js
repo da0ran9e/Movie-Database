@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useCallback } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const MovieList = ({movies, setMovies, isMan, isReset }) => {
 

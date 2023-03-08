@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 module.exports = async (req, res, next) => {
 	try {
 		// 1. Destructure
-		const jwtToken = req.header("token");
+		const jwtToken = req.header("jwt_token");
 
 		if (!jwtToken) {
 			return res.status(403).json("YOU ARE NOT LOGGED IN");

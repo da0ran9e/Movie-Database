@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, Link } from "react-router-dom";
 import {
 	Navigation,
 	Home,
@@ -80,11 +80,11 @@ function App() {
 						} />
 					</Routes>
 
-				<div className="container mt-4">
-					{isManager ? <button className="btn btn-warning btn-lg" onClick={removeManager}>Shutdown manager</button> : null}
-					{isManager ? <InputTodo movies={movies} setMovies={setMovies} /> : null }
-					<MovieList movies={movies} setMovies={setMovies} isMan={isManager}/>
-				</div>
+					<div className="container mt-4">
+						{isManager ? <Link to="/" className="btn btn-warning btn-lg" onClick={removeManager}>Shutdown manager</Link> : null}
+						{isManager ? <InputTodo movies={movies} setMovies={setMovies} /> : null }
+						<MovieList movies={movies} setMovies={setMovies} isMan={isManager}/>
+					</div>
 				</Router>
 			</div>
 		</Fragment>

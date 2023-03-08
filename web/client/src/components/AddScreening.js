@@ -65,7 +65,7 @@ const AddScreening = () => {
 		<Fragment>
 			<div className="form-dark-blue">
 				<div className="container rounded-bottom col-sm-8">
-					<h1 className="text-center pt-4">Add Screening</h1>
+					<h2 className="text-center display-3 py-3">Add Screening</h2>
 					<form className="p-4" onSubmit={onSubmitForm}>
 							{rooms.map(room => (
 								<div key={room.room_id} className="form-check form-check-inline" onChange={e => onChange(e)}>

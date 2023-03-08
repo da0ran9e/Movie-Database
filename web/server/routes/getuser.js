@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 router.post("/", async (req, res) => {
 	try {
-		const jwtToken = req.header("token");
+		const jwtToken = req.header("jwt_token");
 
 		if (!jwtToken) {
 			return res.json(0);

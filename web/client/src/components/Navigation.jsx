@@ -17,7 +17,7 @@ function Navigation({ isAuth, isMan }) {
 					{!isAuth ? (
 						<NavLink className="nav-link" to="/login">Login</NavLink>
 					) : (
-						<NavLink className="nav-link" to="/dashboard">Logout</NavLink>
+						<NavLink className="nav-link" to="/dashboard">Profile</NavLink>
 					)}
 				</li>
 			</ul>)

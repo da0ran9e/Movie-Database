@@ -124,8 +124,8 @@ app.get("/seats/:screen_id", async (req, res) => {
 		const { screen_id } = req.params;
 
 		// 2. Get Seat
-		const allSeat = await pool.query("SELECT * FROM client_get_seat_all($1)", [screen_id]);
-		const bookedSeat = await pool.query("SELECT * FROM client_get_seat_booked($1)", [screen_id]);
+		const allSeat = await pool.query("SELECT * FROM get_seat_all($1)", [screen_id]);
+		const bookedSeat = await pool.query("SELECT * FROM get_seat_booked($1)", [screen_id]);
 
 		allSeat.rows.forEach(seat => {
 			if (bookedSeat.rows.some(booked => booked.seat_id === seat.seat_id)) {
@@ -168,15 +168,17 @@ app.post("/purchase", async (req, res) => {
 		console.log("---");
 
 		// 2. Insert into ticket
-		const queryInsert = "SELECT * FROM book_ticket($1, $2, $3);";
+		var queryInsert = "";
 		var valueInsert = [];
 
 		if (user_id !== null) {
+			queryInsert = "SELECT * FROM book_ticket($1, $2, $3);";
 			valueInsert = [user_id, screen_id];
 		} else {
 			if (!email){
 				return res.status(401).json("Missing Email");		
 			}
+			queryInsert = "SELECT * FROM book_ticket_email($1, $2, $3);";
 			valueInsert = [email, screen_id];
 		}
 

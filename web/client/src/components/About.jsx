@@ -13,7 +13,7 @@ function About() {
 						/>
 					</div>
 					<div className="col-lg-5">
-						<h1 className="font-weight-light">About</h1>
+						<h1 className="display-3 my-3">About</h1>
 						<p>
 							This project was created in 2023.1 semester in HUST 
 							for the course IT3290E - DATABASE LAB.
