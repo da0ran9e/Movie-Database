@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const Login = ({ setAuth, setMan }) => {
+const Login = ({ setAuth, setMan, isMan }) => {
 	const [inputs, setInputs] = useState({
 		email_phone: "",
 		password: ""
@@ -21,7 +21,6 @@ const Login = ({ setAuth, setMan }) => {
 				setMan(true);
 				return;
 			}
-
 
 
 			const body = { email_phone, password };
@@ -56,7 +55,15 @@ const Login = ({ setAuth, setMan }) => {
 	return (
 		<Fragment>
 			<div className="container">
+				{isMan ? <Navigate to="/" replace /> : null}
 				<div className="row justify-content-end">
+					<div className="col p-4 text-end">
+						<p>
+							Login as user: '123'
+							<br/>and password: '123'
+							<br/>to add screenings
+						</p>
+					</div>
 					<div className="col-md-4 form-dark-blue rounded-bottom p-4">
 			<h1 className="text-center">Login</h1>
 			<form onSubmit={onSubmitForm}>

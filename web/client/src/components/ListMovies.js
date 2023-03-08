@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useCallback } from "react";
+import { Link, Navigate } from "react-router-dom";
 
+const MovieList = ({movies, setMovies, isMan, isReset }) => {
 
-const MovieList = ({movies, setMovies, isMan }) => {
-
-	async function getMovies() {
+	const getMovies = useCallback(async () => {
 		const res = await fetch("http://localhost:5000/movies");
 		var movieArray = await res.json();
 
@@ -11,21 +11,14 @@ const MovieList = ({movies, setMovies, isMan }) => {
 			movieArray = movieArray.slice(0,50);
 		}
 
+		console.log(typeof movieArray);
 		// Set the state
 		setMovies(movieArray);
-	}
+	}, [setMovies]);
 
 	useEffect(() => {
 		getMovies();
-	}, []);
-
-	function switchManager(movie_id) {
-		if (!isMan){
-			return (<a href={"/booking/" + movie_id} className="btn btn-success btn-lg" >Buy ticket</a>);
-		} else {
-			return (<a href={"/addscreening/" + movie_id} className="btn btn-success btn-lg" >Add Screening</a>);
-		}
-	}
+	}, [getMovies]);
 
 	return (
 		<Fragment>
@@ -37,12 +30,16 @@ const MovieList = ({movies, setMovies, isMan }) => {
 								<img className="movie-poster-item" 
 									src={movie.poster_url.replace(".jpg", "_UX512_.jpg")}
 									alt={movie.movie_id}
-									onError={(current) => {
-										current.onError=null;
-										current.src='m.media-amazon.com/images/M/MV5BYzA0ZmFkMjQtNTVlYS00MzVkLWEyOGUtNTYxOWMyN2M5YWY5XkEyXkFqcGdeQXVyNjU0NTI0Nw@@._V1_UX512_.jpg';
+									onError={({currentTarget}) => {
+										currentTarget.src="/poster-error.png";
+										currentTarget.onerror=null;
 									}}
 								></img>
-								{switchManager(movie.movie_id)}
+								{!isMan ? 
+									<Link to={"/booking/" + movie.movie_id} className="btn btn-success btn-lg" >Buy ticket</Link>
+								: 
+									<Link to={"/addscreening/" + movie.movie_id} className="btn btn-success btn-lg" >Add Screening</Link>
+								}
 							</div>
 							<h4>{movie.title}</h4>
 						</div>

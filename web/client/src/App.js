@@ -18,9 +18,11 @@ import Dashboard from "./components/Dashboard";
 
 import InputTodo from "./components/InputTodo";
 import MovieList from "./components/ListMovies";
+import DescMovie from "./components/Description";
 import Booking from "./components/Booking";
 
 import AddScreening from "./components/AddScreening";
+import ScrollToTop from "./helper/ScrollToTop";
 
 function App() {
 	const [movies, setMovies] = useState([]);
@@ -55,23 +57,35 @@ function App() {
 		<Fragment>
 			<div  className="bg-dark text-white">
 				<Router>
+					<ScrollToTop />
 					<Navigation isAuth={isAuth} isMan={isManager} />
 					<ToastContainer />
 					<Routes>
 						<Route path="/" element={<Home /> } />
 						<Route path="/about" element={<About />} />
 						<Route path="/dashboard" element={isAuth ? <Dashboard setAuth={setIsAuthenticated}/> : <Navigate to="/" replace />} />
-						<Route path="/login" element={isAuth ? <Navigate to="/" replace /> : <Login setAuth={setIsAuthenticated} setMan={setManagerMode}/>} />
+						<Route path="/login" element={isAuth ? <Navigate to="/" replace /> : <Login setAuth={setIsAuthenticated} setMan={setManagerMode} isMan={isManager}/>} />
 						<Route path="/register" element={isAuth ? <Navigate to="/" replace /> : <Register setAuth={setIsAuthenticated}/>} />
-						<Route path="/addscreening/:movie_id" element={<AddScreening />} />
-						<Route path="/booking/:movie_id" element={<Booking />} />
+						<Route path="/addscreening/:movie_id" element={
+							<Fragment>
+								<AddScreening />
+								<DescMovie />
+							</Fragment>
+						} />
+						<Route path="/booking/:movie_id" element={
+							<Fragment>
+								<DescMovie />
+								<Booking isAuth={isAuth}/>
+							</Fragment>
+						} />
 					</Routes>
-				</Router>
+
 				<div className="container mt-4">
-					{isManager ? <button className="btn btn-secondary btn-lg" onClick={removeManager}>Shutdown manager</button> : null}
+					{isManager ? <button className="btn btn-warning btn-lg" onClick={removeManager}>Shutdown manager</button> : null}
 					{isManager ? <InputTodo movies={movies} setMovies={setMovies} /> : null }
 					<MovieList movies={movies} setMovies={setMovies} isMan={isManager}/>
 				</div>
+				</Router>
 			</div>
 		</Fragment>
 	);

@@ -3,17 +3,17 @@ const app = express();
 const cors = require("cors");
 const pool = require("./db");
 
-//middleware
+// Middleware
 app.use(cors());
-app.use(express.json());	// req.body
+app.use(express.json());	// req.body for POST and PUT
 
 
 // ROUTES //
 
 app.use("/auth", require("./routes/jwtAuth"));
 app.use("/dashboard", require("./routes/dashboard"));
-
 app.use("/manager", require("./routes/manager"));
+app.use("/getuser",require("./routes/getuser"));
 
 
 app.get("/search", async(req, res) => {
@@ -31,7 +31,20 @@ app.get("/search", async(req, res) => {
 
 app.get("/movies", async (req, res) => {
 	try {
-		const text = "SELECT * FROM get_films();"
+		var text = "SELECT * FROM get_films();"
+
+		// Women's Day Special
+		const womenDay = new Date('2000-03-08');
+		const today = new Date();
+
+		if (today.getMonth() === womenDay.getMonth() 
+			&& today.getDate() === womenDay.getDate()){
+			text = `SELECT * FROM Movie 
+					WHERE title ~* 'women|woman|lady|mother|mom|female|miss '
+					AND age_restriction != 'R' 
+					ORDER BY release_date DESC;`;
+		}
+		// Women's Day Special
 
 		const allMovies = await pool.query(text);
 		res.json(allMovies.rows);
@@ -53,7 +66,7 @@ app.get("/rooms", async (req, res) => {
 	}
 });
 
-app.get("/booking/:id", async (req, res) => {
+app.get("/movie/:id", async (req, res) => {
 	try {
 		const { id } = req.params;
 
@@ -87,6 +100,104 @@ app.get("/booking/:id", async (req, res) => {
 	}
 });
 
+app.post("/screenings", async (req, res) => {
+	try {
+		// 1. Destructure
+		const { movie_id, select_day } = req.body;
+		console.log("Test: ");
+		console.log(select_day);
+
+		// 2. Get Screening
+		const queryRoom = "SR JOIN Room R ON SR.room_id=R.room_id";
+		const allScreen = await pool.query("SELECT * FROM client_get_screening($1, $2) " + queryRoom + ";", [movie_id, select_day]);
+
+		res.json(allScreen.rows);
+	} catch (err) {
+		console.error(err);
+		console.error(err.stack);
+	}
+});
+
+app.get("/seats/:screen_id", async (req, res) => {
+	try {
+		// 1. Destructure
+		const { screen_id } = req.params;
+
+		// 2. Get Seat
+		const allSeat = await pool.query("SELECT * FROM client_get_seat_all($1)", [screen_id]);
+		const bookedSeat = await pool.query("SELECT * FROM client_get_seat_booked($1)", [screen_id]);
+
+		allSeat.rows.forEach(seat => {
+			if (bookedSeat.rows.some(booked => booked.seat_id === seat.seat_id)) {
+				seat.book = 1;
+			} else {
+				seat.book = 0;
+			}
+		});
+
+		res.json(allSeat.rows);
+	} catch (err) {
+		console.error(err);
+		console.error(err.stack);
+	}
+});
+
+app.get("/price/:screen_id", async (req, res) => {
+	try {
+		// 1. Destructure
+		const { screen_id } = req.params;
+
+		// 2. Get Price
+		const dayPrice = await pool.query("SELECT * FROM client_get_price($1)", [screen_id]);
+
+		res.json(dayPrice.rows[0].client_get_price);
+	} catch (err) {
+		console.error(err);
+		console.error(err.stack);
+	}
+});
+
+app.post("/purchase", async (req, res) => {
+	try {
+		// 1. Destructure
+		const { screen_id, buy_tickets, user_id, email } = req.body;
+		console.log(buy_tickets);
+		console.log(screen_id);
+		console.log(user_id);
+		console.log(email);
+		console.log("---");
+
+		// 2. Insert into ticket
+		const queryInsert = "SELECT * FROM book_ticket($1, $2, $3);";
+		var valueInsert = [];
+
+		if (user_id !== null) {
+			valueInsert = [user_id, screen_id];
+		} else {
+			if (!email){
+				return res.status(401).json("Missing Email");		
+			}
+			valueInsert = [email, screen_id];
+		}
+
+		for (let i = 0; i < buy_tickets.length; i++) { 
+			valueInsert.push(buy_tickets[i]);
+			// [user_id / email, screen_id, seat_id]
+			const inserted = await pool.query(queryInsert, valueInsert);
+			console.log(valueInsert);
+			valueInsert.pop();
+
+			if (inserted.rows.length === 0){
+				return res.status(400).json("INPUT ERROR, PAUSED AT TICKET #" + (i+1));
+			}
+		}
+
+		res.json(1);
+	} catch (err) {
+		console.log(err.message);
+		res.status(500).send("Server Error");
+	}
+});
 
 
 

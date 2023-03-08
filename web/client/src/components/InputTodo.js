@@ -25,18 +25,18 @@ const InputMovie = ({movies, setMovies}) => {
 
 	return (
 		<Fragment>
-			<div className="container text-center">
-				<h1 className="my-5">Movie Search</h1>
-				<form className="d-flex my-3" onSubmit={onSubmitForm}>
+			<div className="container text-center p-0">
+				<h1 className="mt-5">Movie Search</h1>
+				<form className="d-flex my-4" onSubmit={onSubmitForm}>
 					<input type="text"
 						placeholder="Search Title..."
 						className="form-control"
 						value={title}
 						onChange = {e => setTitle(e.target.value)}
 					/>
-					<button className="btn btn-success">Find</button>
+					<button className="btn btn-success btn-md mx-3">Find</button>
 				</form>
-				{result ? <div className="text-start my-2">Found {result} result{result > 1 ? "s" : null}.</div> : null}
+				{result ? <div className="text-start my-3">Found {result} result{result > 1 ? "s" : null}.</div> : null}
 			</div>
 		</Fragment>
 	)

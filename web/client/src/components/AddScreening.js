@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AddScreening = () => {
@@ -63,33 +63,35 @@ const AddScreening = () => {
 
 	return (
 		<Fragment>
-			<div className="container form-dark-blue rounded-bottom">
-				<h1 className="text-center pt-4">Add Screening</h1>
-				<form className="p-4" onSubmit={onSubmitForm}>
-						{rooms.map(room => (
-							<div key={room.room_id} className="form-check form-check-inline" onChange={e => onChange(e)}>
-								<label>Room {room.room_id} - {room.room_type}</label>
-								<input type="radio" className="form-check-input" name="room_id" value={room.room_id} />
-							</div>
-						))}
-					<input
-						type="date"
-						name="screen_date"
-						value={screen_date}
-						onChange={e => onChange(e)}
-						className="form-control my-3"
-					/>
-					<input
-						type="time"
-						name="start_time"
-						value={start_time}
-						onChange={e => onChange(e)}
-						className="form-control my-3"
-					/>
-					<div className="d-flex flex-row justify-content-around">
-						<button className="btn btn-success btn-lg">Submit</button>
-					</div>
-				</form>
+			<div className="form-dark-blue">
+				<div className="container rounded-bottom col-sm-8">
+					<h1 className="text-center pt-4">Add Screening</h1>
+					<form className="p-4" onSubmit={onSubmitForm}>
+							{rooms.map(room => (
+								<div key={room.room_id} className="form-check form-check-inline" onChange={e => onChange(e)}>
+									<label>Room {room.room_id} - {room.room_type}</label>
+									<input type="radio" className="form-check-input" name="room_id" value={room.room_id} />
+								</div>
+							))}
+						<input
+							type="date"
+							name="screen_date"
+							value={screen_date}
+							onChange={e => onChange(e)}
+							className="form-control my-3"
+						/>
+						<input
+							type="time"
+							name="start_time"
+							value={start_time}
+							onChange={e => onChange(e)}
+							className="form-control my-3"
+						/>
+						<div className="d-flex flex-row justify-content-around">
+							<button className="btn btn-success btn-lg">Submit</button>
+						</div>
+					</form>
+				</div>
 			</div>
 		</Fragment>
 	);
