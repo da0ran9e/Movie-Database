@@ -3,6 +3,7 @@
 \i triggers_in_mdb.sql
 \i movie-function.sql
 \i user-function.sql
+\i index.sql
 
 \cd data
 \i load-data.sql
