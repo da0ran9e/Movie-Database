@@ -77,7 +77,7 @@ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION client_get_seat_all(screen_id integer)
 RETURNS TABLE(
 	seat_id integer,
-	seat_row text,
+	seat_row varchar(5),
 	seat_num integer
 ) AS
 $$
@@ -85,7 +85,7 @@ BEGIN
 	RETURN QUERY
 	SELECT S.seat_id, S.row, S.num
 	FROM Seat S JOIN Screening SR ON S.room_id=SR.room_id
-	WHERE SR.screen_id=screen_id;
+	WHERE SR.screen_id=$1;
 END;
 $$
 LANGUAGE plpgsql;
@@ -94,7 +94,7 @@ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION client_get_seat_booked(screen_id integer)
 RETURNS TABLE(
 	seat_id integer,
-	seat_row text,
+	seat_row varchar(5),
 	seat_num integer
 ) AS
 $$
@@ -102,7 +102,7 @@ BEGIN
 	RETURN QUERY
 	SELECT S.seat_id, S.row, S.num
 	FROM Seat S JOIN Ticket T ON S.seat_id=T.seat_id
-	WHERE T.screen_id=screen_id;
+	WHERE T.screen_id=$1;
 END;
 $$
 LANGUAGE plpgsql;
@@ -156,6 +156,9 @@ END;
 $$
 LANGUAGE plpgsql;
 
+
+/* Integrated into book_ticket function
+
 -- Auto calculate price
 CREATE OR REPLACE FUNCTION auto_price()
 RETURNS TRIGGER LANGUAGE plpgsql
@@ -166,7 +169,7 @@ DECLARE
 	screen_time int;
 	roomtype varchar(10);
 BEGIN
-	UPDATE Ticket 
+	UPDATE Ticket T
 	SET total_price = client_get_price(NEW.screen_id)
 	WHERE T.ticket_id=NEW.ticket_id;
 	
@@ -178,7 +181,7 @@ CREATE OR REPLACE TRIGGER auto_price
 AFTER INSERT ON Ticket
 FOR EACH ROW
 EXECUTE PROCEDURE auto_price();
-
+*/
 
 
 
@@ -239,3 +242,29 @@ END;
 $$
 LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION get_seats_taken_from_screen(screen_id integer)
+RETURNS SETOF Seat AS
+$$
+BEGIN
+	RETURN QUERY
+	SELECT S.seat_id, S.row, S.num, S.room_id 
+	FROM Seat S
+	JOIN Room R ON R.room_id=S.room_id
+	JOIN Screening SR ON SR.room_id=R.room_id
+	JOIN Ticket T ON S.seat_id=T.seat_id
+	WHERE SR.screen_id=$1;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_empty_seat(screen_id integer)
+RETURNS SETOF Seat AS
+$$
+BEGIN
+	RETURN QUERY
+	SELECT S.seat_id, S.row, S.num, S.room_id 
+	FROM get_seats_from_screen($1)
+	WHERE NOT EXISTS (SELECT * FROM get_seats_taken_from_screen($1));
+END;
+$$
+LANGUAGE plpgsql;
