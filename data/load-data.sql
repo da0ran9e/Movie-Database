@@ -11,3 +11,7 @@
 \copy Customer FROM 'Customer.csv' (format csv, header match, delimiter ',', encoding 'utf8');
 
 \copy Room FROM 'Room.csv' (format csv, header match, delimiter ',', encoding 'utf8');
+
+
+
+\copy Screening(screen_date, start_time, room_id, movie_id) FROM 'Screening.csv' (format csv, header match, delimiter ',', encoding 'utf8');

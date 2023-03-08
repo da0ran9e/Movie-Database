@@ -28,9 +28,7 @@ ALTER TABLE Seat
 	ADD CONSTRAINT fk_seat__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE CASCADE;
 
 ALTER TABLE Screening
-	ADD CONSTRAINT fk_screen__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE SET NULL,
-	--Tôi nghĩ thay vì on delete set null, nên để là on delete cascade, vì sau khi phòng bị xóa rồi thì cái screening cũng
-	-- nên bị xóa luôn, vì ko có phòng để chiếu
+	ADD CONSTRAINT fk_screen__room_id FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE CASCADE,
 	ADD CONSTRAINT fk_screen__movie_id FOREIGN KEY (movie_id) REFERENCES Movie(movie_id) ON DELETE SET NULL;
 
 ALTER TABLE Ticket

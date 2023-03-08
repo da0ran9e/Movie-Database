@@ -4,6 +4,6 @@
 \i movie-function.sql
 \i user-function.sql
 
-\cd proj
+\cd data
 \i load-data.sql
 \cd ..

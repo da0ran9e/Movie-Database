@@ -69,8 +69,8 @@ $$
 DECLARE 
 	a int := (select count(*) from Seat where room_id = NEW.room_id);
 BEGIN
-	IF (a > 149) AND (TG_TABLE_NAME = 'SEAT') THEN -- If cascaded from room then bypass
-		RAISE NOTICE 'CANNOT INSERT/DELETE SEAT';
+	IF (a > 149) AND (TG_TABLE_NAME ILIKE 'SEAT') THEN -- If cascaded from Deleting Room then bypass
+		RAISE NOTICE 'CANNOT INSERT/DELETE SEAT (%)', a;
 		RETURN NULL;
 	END IF;
 	RETURN NEW;
@@ -90,29 +90,25 @@ RETURNS TRIGGER LANGUAGE plpgsql
 AS $$
 DECLARE 
 	a record;
-	b time;
+	new_end_time time;
 BEGIN
-	b := (select (new.start_time + duration + '00:15:00') from movie where new.movie_id = movie.movie_id);
-	for a in (select start_time as s, (start_time + duration + '00:15:00') as sd
-			  from screening, movie 
-			  where screen_date = new.screen_date 
-			  	and room_id = new.room_id 
-			  	and screening.movie_id = movie.movie_id ) loop
-		if(a.sd > new.start_time and a.s <= new.start_time) then 
-			raise notice 'The screening conflicts with another one';
+	if (new.start_time < '08:00:00' or new.start_time > '23:30:00') then
+		raise notice 'The screening is out of working hours';
+		return null;
+	end if;
+
+	new_end_time := (select (new.start_time + duration + '00:15:00') from movie where new.movie_id = movie.movie_id);
+
+	for a in (select start_time, (start_time + duration + '00:15:00') as end_time, screen_id
+				from screening, movie 
+				where screening.movie_id = movie.movie_id
+					and screen_date = new.screen_date 
+					and room_id = new.room_id) loop
+
+		if(a.end_time > new.start_time and a.start_time < new_end_time) then 
+			raise notice 'The screening conflicts with another one: %', a.screen_id;
 			return null;
 		end if;
-		
-		if(a.sd <= b and new.start_time <= a.s) then
-			raise notice 'The screening conflicts with another one';
-			return null;
-		end if;
-		
-		if(new.start_time <= a.s and a.s < b) then
-			raise notice 'The screening conflicts with another one';
-			return null;
-		end if;
-		
 	end loop;
 	return new;
 END
@@ -123,29 +119,8 @@ FOR EACH ROW
 EXECUTE PROCEDURE screening_problem();
 
 
---7. Chặn việc xóa screening khi đã có người đặt vé
--- CREATE OR REPLACE FUNCTION prevent_delete_screening()
--- RETURNS TRIGGER LANGUAGE plpgsql
--- AS $$
--- BEGIN
--- 	if(NEW.available_seat < 150) then
--- 		raise notice 'This screening was be booked so it can not be deleted';
--- 		return null;
--- 	end if;
--- 	return new;
--- END
--- $$;
 
--- CREATE OR REPLACE TRIGGER prevent_delete_screening
--- BEFORE DELETE ON screening
--- FOR EACH ROW
--- EXECUTE PROCEDURE prevent_delete_screening();
-
---8. Chưa viết được trigger chặn xóa phòng đã được book
-
-
-
--- 9. Error with input
+-- 9. Reset index for Customer (input from file doesn't increment user_id)
 CREATE OR REPLACE FUNCTION reset_customer_id()
 RETURNS TRIGGER 
 AS $$

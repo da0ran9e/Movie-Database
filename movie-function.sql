@@ -1,20 +1,3 @@
--- CREATE OR REPLACE FUNCTION SearchMovieTitle(str_title text[])
--- RETURNS TABLE AS
--- $$
--- BEGIN
--- 	SELECT *
--- 	FROM Movies
--- 	WHERE title_tokens @@ plainto_tsquery(str_title)
--- END;
--- $$
-
-
--- UPDATE Movies M
--- SET title_tokens = to_tsvector(M.title)
--- WHERE title_tokens IS NULL;
-
--- --- Maybe phraseto_tsquery if we want to use <-> (FOLLOWED BY) instead of &	
-
 -- MANAGER
 CREATE OR REPLACE FUNCTION find_films(term TEXT)
 RETURNS SETOF Movie AS
@@ -28,7 +11,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION get_films()
+CREATE OR REPLACE FUNCTION get_films()	-- Shows some of the latest first instead of loading all in (for UI)
 RETURNS SETOF Movie AS
 $$
 BEGIN
@@ -42,10 +25,9 @@ $$
 LANGUAGE plpgsql;
 
 
-
-
+-- HELPER FUNCTIONS FOR THE WEB APP:
 -- LOGIN
-CREATE OR REPLACE FUNCTION login_exist_user(email_or_phone TEXT)
+CREATE OR REPLACE FUNCTION check_exist_user(email_or_phone TEXT)
 RETURNS SETOF Customer AS
 $$
 BEGIN
@@ -58,100 +40,27 @@ $$
 LANGUAGE plpgsql;
 
 
-
-
--- CLIENT
-CREATE OR REPLACE FUNCTION client_get_screening(movie_id integer, day date)
-RETURNS SETOF Screening AS
+-- TICKET
+CREATE OR REPLACE FUNCTION get_booked_tickets(uid integer)
+RETURNS SETOF Ticket AS
 $$
 BEGIN
 	RETURN QUERY
 	SELECT *
-	FROM Screening SR
-	WHERE SR.movie_id=$1 AND SR.screen_date=$2;
+	FROM Ticket T
+	WHERE T.user_id=$1;
 END;
 $$
 LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE FUNCTION client_get_seat_all(screen_id integer)
-RETURNS TABLE(
-	seat_id integer,
-	seat_row varchar(5),
-	seat_num integer
-) AS
+CREATE OR REPLACE FUNCTION get_booked_tickets(email text)
+RETURNS SETOF Ticket AS
 $$
 BEGIN
 	RETURN QUERY
-	SELECT S.seat_id, S.row, S.num
-	FROM Seat S JOIN Screening SR ON S.room_id=SR.room_id
-	WHERE SR.screen_id=$1;
-END;
-$$
-LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE FUNCTION client_get_seat_booked(screen_id integer)
-RETURNS TABLE(
-	seat_id integer,
-	seat_row varchar(5),
-	seat_num integer
-) AS
-$$
-BEGIN
-	RETURN QUERY
-	SELECT S.seat_id, S.row, S.num
-	FROM Seat S JOIN Ticket T ON S.seat_id=T.seat_id
-	WHERE T.screen_id=$1;
-END;
-$$
-LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE FUNCTION client_get_price(screen_id integer)
-RETURNS INT AS
-$$
-DECLARE
-	price INT;
-	day_of_week INT;
-	screen_time INT;
-	room_type VARCHAR(10);
-BEGIN
-	SELECT EXTRACT(DOW FROM SR.screen_date) + 1, EXTRACT(HOUR FROM SR.start_time), R.room_type
-	INTO STRICT day_of_week, screen_time, room_type
-	FROM Screening SR JOIN Room R ON SR.room_id=R.room_id
-	WHERE SR.screen_id=$1;
-
-	-- 1=Sunday, 2-7=Mon-Sat
-	IF day_of_week BETWEEN 2 AND 5 THEN
-		IF screen_time BETWEEN 7 AND 12 THEN
-			price := 50000;
-		ELSIF screen_time BETWEEN 12 AND 23 THEN
-			price := 75000;
-		ELSE
-			price := 60000;
-		END IF;
-	ELSE
-		IF screen_time BETWEEN 7 AND 12 THEN
-			price := 65000;
-		ELSIF screen_time BETWEEN 12 AND 23 THEN
-			price := 85000;
-		ELSE
-			price := 70000;
-		END IF;
-	END IF;
-
-	IF room_type = '3D' THEN
-		price := price + 20000;
-	END IF;
-
-	RETURN price;
-
-	EXCEPTION
-		WHEN NO_DATA_FOUND THEN
-			RAISE EXCEPTION 'Screening % not found', screen_id;
-		WHEN TOO_MANY_ROWS THEN
-			RAISE EXCEPTION 'Screening % not unique', screen_id;
+	SELECT *
+	FROM Ticket T
+	WHERE T.email=$1;
 END;
 $$
 LANGUAGE plpgsql;
@@ -224,47 +133,6 @@ BEGIN
 	JOIN join_movie_cast J ON J.cast_id=C.cast_id
 	JOIN Movie M ON J.movie_id=M.movie_id
 	WHERE M.movie_id=$1;
-END;
-$$
-LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION get_seats_from_screen(screen_id integer)
-RETURNS SETOF Seat AS
-$$
-BEGIN
-	RETURN QUERY
-	SELECT S.seat_id, S.row, S.num, S.room_id 
-	FROM Seat S 
-	JOIN Room R ON R.room_id=S.room_id
-	JOIN Screening SR ON SR.room_id=R.room_id
-	WHERE SR.screen_id=$1;
-END;
-$$
-LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION get_seats_taken_from_screen(screen_id integer)
-RETURNS SETOF Seat AS
-$$
-BEGIN
-	RETURN QUERY
-	SELECT S.seat_id, S.row, S.num, S.room_id 
-	FROM Seat S
-	JOIN Room R ON R.room_id=S.room_id
-	JOIN Screening SR ON SR.room_id=R.room_id
-	JOIN Ticket T ON S.seat_id=T.seat_id
-	WHERE SR.screen_id=$1;
-END;
-$$
-LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION get_empty_seat(screen_id integer)
-RETURNS SETOF Seat AS
-$$
-BEGIN
-	RETURN QUERY
-	SELECT S.seat_id, S.row, S.num, S.room_id 
-	FROM get_seats_from_screen($1)
-	WHERE NOT EXISTS (SELECT * FROM get_seats_taken_from_screen($1));
 END;
 $$
 LANGUAGE plpgsql;
