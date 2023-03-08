@@ -31,7 +31,7 @@ nvm on
 	npm start
 	```
 
-3. Update the user, password and database name with yours in `/web/server/db.js`
+3. Update the user, password and database name with **your database info** in `/web/server/db.js`
 	```js
 	const Pool = require("pg").Pool;
 
@@ -46,7 +46,7 @@ nvm on
 	module.exports = pool;
 	```
 
-4. Load all data into postgres database with PSQL command in the root folder `/mdb`:
+4. To initialize the database, load all data into postgreSQL with PSQL command in the root folder `/mdb`:
 	```
 	\i load-all.sql
 	```
@@ -66,19 +66,7 @@ Go to https://erdplus.com/ to sign up for an account. From the navigation bar, g
 
 Another way of doing this is to create the database first as follows. Then right-click the created database and choose "Generate ERD" from the dropdown menu to view the diagram inside PgAdmin4.
 
-### Initialize the database
+### Initialize the database only
 To create the database, open PgAdmin4, type in your master password, right click the side bar and choose "Create new database" from the dropdown menu.
 
-Right click on the newly created database, choose Query Tools and open the files ending in `.sql` from this repository.
-
-Run them according to this order: 
-```
-movie-create.sql
-movie-alter.sql
-contraint_in_mdb.sql
-triggers_in_mdb.sql
-user_function.sql
-manager_function.sql
-```
-
-To proceed, head on to the subfolder `proj` and follow the README there to import the data.
+Right click on the newly created database, choose PSQL Tools and open the file `load-all.sql` from this repository `/mdb`.
